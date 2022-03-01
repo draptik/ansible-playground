@@ -33,7 +33,20 @@ sudo apt update
 sudo apt install ansible
 ```
 
+Output of `ansible --version` should be similar to:
+
+```txt
+ansible [core 2.12.2]
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/pi/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3/dist-packages/ansible
+  ansible collection location = /home/pi/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible
+  python version = 3.9.2 (default, Mar 12 2021, 04:06:34) [GCC 10.2.1 20210110]
+  jinja version = 2.11.3
+  libyaml = True
 ## Ansible: Setup inventory
+```
 
 The default location of the `inventory` is: `/etc/ansible/hosts`.
 
