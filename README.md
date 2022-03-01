@@ -45,8 +45,9 @@ ansible [core 2.12.2]
   python version = 3.9.2 (default, Mar 12 2021, 04:06:34) [GCC 10.2.1 20210110]
   jinja version = 2.11.3
   libyaml = True
-## Ansible: Setup inventory
 ```
+
+## Ansible: Setup inventory
 
 The default location of the `inventory` is: `/etc/ansible/hosts`.
 
