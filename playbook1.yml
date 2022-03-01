@@ -1,0 +1,29 @@
+---
+- name: My first playbook
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+ 
+  tasks:
+    - name: apt update...
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    - name: apt upgrade...
+      apt:
+        upgrade: dist
+    - name: install vim...
+      apt:
+        name: vim
+        state: present
+    - name: install git...
+      apt:
+        name: git
+        state: present
+    - name: install tmux...
+      apt:
+        name: tmux
+        state: present
+
