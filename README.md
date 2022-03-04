@@ -150,3 +150,42 @@ Note: no user/sudo changes.
         dest: ~/.dotfiles
 ```
 
+## Setup users in playbook
+
+The previous playbooks work when executed from another RPi and both have the default user `pi`.
+Executing the playbook from another system (for example your laptop) will fail, because your default
+user will most likely have a different name than `pi`.
+
+To change the default user on the target system add the `ansible_user` to the `vars` section:
+
+Before:
+
+```yml
+- name: My playbook
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+```
+
+After:
+
+```yml
+- name: My playbook
+  hosts: all
+  become: yes
+  become_user: root
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_user: pi
+```
+
+Note the last line.
+
+Now the playbook can be executed from any machine (ssh credentials must be present).
+
+[Docs](https://docs.ansible.com/ansible/latest/user_guide/connection_details.html)
+
+
+
