@@ -187,5 +187,17 @@ Now the playbook can be executed from any machine (ssh credentials must be prese
 
 [Docs](https://docs.ansible.com/ansible/latest/user_guide/connection_details.html)
 
+### Using Python's PIP module
+
+TODO
+
+### Using File and Copy module
+
+TODO
+
+### Using systemd module
+
+TODO
+
 
 
