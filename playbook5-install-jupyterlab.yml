@@ -16,7 +16,7 @@
       apt:
         upgrade: dist
     
-    - name: install JupyterLab prerequisites via apt...
+    - name: apt install JupyterLab prerequisites...
       apt:
         pkg:
           - python3-pip
@@ -40,7 +40,7 @@
         owner: pi
         mode: 0755
 
-    - name: copy jupyter service file to destination...
+    - name: copy jupyter.service file to destination...
       copy:
         src: ./resources/jupyter.service
         dest: /etc/systemd/system/jupyter.service
