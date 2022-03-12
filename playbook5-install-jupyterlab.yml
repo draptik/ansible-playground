@@ -15,7 +15,11 @@
     - name: apt upgrade...
       apt:
         upgrade: dist
-    
+
+    - name: set timezone...
+      community.general.timezone:
+        name: Europe/Berlin
+        
     - name: apt install JupyterLab prerequisites...
       apt:
         pkg:
