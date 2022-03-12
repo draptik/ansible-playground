@@ -2,6 +2,11 @@
 
 Just some [ansible](https://www.ansible.com/) experiments...
 
+## TLDR RPi vs Jupyter
+
+- If you are reading this for installing JupyterLab from a real system: TODO
+- If you want to go through the pain: read on
+
 ## RPi setup
 
 I started using 2 RPis version 1 (!).
