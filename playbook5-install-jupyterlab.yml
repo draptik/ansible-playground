@@ -33,20 +33,37 @@
         name:
           - jupyterlab
 
-    - name: file: create folder for notebooks...
+    - name: file create folder for notebooks...
       file:
         path: /home/pi/notebooks
         state: directory
         owner: pi
+        group: pi
         mode: 0755
 
-    - name: copy: jupyter.service file to destination...
+    - name: copy jupyter.service file to destination...
       copy:
         src: ./resources/jupyter.service
         dest: /etc/systemd/system/jupyter.service
         owner: root
 
-    - name: systemd: enable and start jupyter service...
+    - name: copy jupyter json file to destination...
+      copy:
+        src: ./resources/jupyter_notebook_config.json
+        dest: /home/pi/.jupyter/jupyter_notebook_config.json
+        owner: pi
+        group: pi
+        mode: 0600
+
+    - name: copy jupyter config file to destination...
+      copy:
+        src: ./resources/jupyter_notebook_config.py
+        dest: /home/pi/.jupyter/jupyter_notebook_config.py
+        owner: pi
+        group: pi
+        mode: 0644
+
+    - name: systemd enable and start jupyter service...
       systemd:
         name: jupyter
         enabled: yes

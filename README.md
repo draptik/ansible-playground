@@ -189,15 +189,58 @@ Now the playbook can be executed from any machine (ssh credentials must be prese
 
 ### Using Python's PIP module
 
-TODO
+- [pip module docs](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/pip_module.html)
+
+Example install pip packages
+
+```yml
+- name: pip install JupyterLab prerequisites...
+  pip:
+    name:
+      - setuptools
+      - cffi
+```
 
 ### Using File and Copy module
 
-TODO
+- [file module docs](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/file_module.html)
+- [copy module docs](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html)
+
+Example create directory
+
+```yml
+- name: file create folder for notebooks...
+  file:
+    path: /home/pi/notebooks
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+```
+
+Example copy file
+
+```yml
+- name: copy jupyter.service file to destination...
+  copy:
+    src: ./resources/jupyter.service
+    dest: /etc/systemd/system/jupyter.service
+    owner: root
+```
 
 ### Using systemd module
 
-TODO
+- [systemd module docs](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/systemd_module.html)
 
+Example enable and start systemd service
+
+```yml
+- name: systemd enable and start jupyter service...
+  systemd:
+    name: jupyter
+    enabled: yes
+    daemon_reload: yes
+    state: started
+```
 
 
