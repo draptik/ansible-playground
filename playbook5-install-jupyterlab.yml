@@ -8,10 +8,12 @@
     ansible_user: pi
  
   tasks:
+
     - name: apt update...
       apt:
         update_cache: yes
         cache_valid_time: 3600
+
     - name: apt upgrade...
       apt:
         upgrade: dist
@@ -19,12 +21,21 @@
     - name: set timezone...
       community.general.timezone:
         name: Europe/Berlin
-        
+
     - name: apt install JupyterLab prerequisites...
       apt:
         pkg:
           - python3-pip
           - libffi-dev
+
+    - name: apt install python developement rerequisites...
+      apt:
+        pkg:
+          - libatlas-base-dev
+          - python3-matplotlib
+          - python3-scipy
+          - libopenjp2-7-dev
+          - libtiff5
 
     - name: pip install JupyterLab prerequisites...
       pip:
@@ -37,6 +48,13 @@
         name:
           - jupyterlab
 
+    - name: pip packages for python development...
+      pip:
+        name:
+          - pandas
+          - numpy
+          - openpyxl
+          
     - name: file create folder for notebooks...
       file:
         path: /home/pi/notebooks
