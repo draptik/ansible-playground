@@ -1,0 +1,60 @@
+---
+- name: Arch playbook
+  hosts: playground
+  become: yes
+  become_user: root
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_user: patrick
+
+  tasks:
+
+    - name: Create the `aur_builder` user
+      become: yes
+      ansible.builtin.user:
+        name: aur_builder
+        create_home: yes
+        group: wheel
+
+    - name: Allow the `aur_builder` user to run `sudo pacman` without a password
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/11-install-aur_builder
+        line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+        create: yes
+        validate: 'visudo -cf %s'
+
+    - name: install git and base-devel...
+      community.general.pacman:
+        name: 
+          - git
+          - base-devel
+        state: present
+
+    - name: clone yay repository...
+      become: true
+      become_user: aur_builder 
+      git:
+        repo: 'https://aur.archlinux.org/yay-bin.git'
+        dest: ~/yay-bin
+
+    - name: check if yay is installed...
+      command: which yay
+      register: yay_installed
+      ignore_errors: true
+
+    - name: create package yay if it hasn't been installed yet...
+      become: true
+      become_user: aur_builder 
+      ansible.builtin.command: /usr/bin/makepkg -si --noconfirm
+      args:
+        chdir: ~/yay-bin
+      when: yay_installed.stderr | length > 0
+
+    - name: Install packages using yay
+      aur:
+        use: yay
+        name:
+          - git
+      become: yes
+      become_user: aur_builder
