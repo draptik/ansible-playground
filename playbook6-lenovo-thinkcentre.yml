@@ -11,14 +11,14 @@
 
     - name: Create the `aur_builder` user
       become: yes
-      ansible.builtin.user:
+      user:
         name: aur_builder
         create_home: yes
         group: wheel
 
     - name: Allow the `aur_builder` user to run `sudo pacman` without a password
       become: yes
-      ansible.builtin.lineinfile:
+      lineinfile:
         path: /etc/sudoers.d/11-install-aur_builder
         line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
         create: yes
@@ -38,18 +38,17 @@
         repo: 'https://aur.archlinux.org/yay-bin.git'
         dest: ~/yay-bin
 
-    - name: check if yay is installed...
-      command: which yay
-      register: yay_installed
-      ignore_errors: true
+    - name: Gather the package facts
+      package_facts:
+        manager: auto
 
     - name: create package yay if it hasn't been installed yet...
       become: true
       become_user: aur_builder 
-      ansible.builtin.command: /usr/bin/makepkg -si --noconfirm
+      command: /usr/bin/makepkg -si --noconfirm
       args:
         chdir: ~/yay-bin
-      when: yay_installed.stderr | length > 0
+      when: "'yay-bin' not in ansible_facts.packages"
 
     - name: Install packages using yay
       aur:
