@@ -31,16 +31,17 @@
           - base-devel
         state: present
 
+    - name: Gather the package facts
+      package_facts:
+        manager: auto
+
     - name: clone yay repository...
       become: true
       become_user: aur_builder 
       git:
         repo: 'https://aur.archlinux.org/yay-bin.git'
         dest: ~/yay-bin
-
-    - name: Gather the package facts
-      package_facts:
-        manager: auto
+      when: "'yay-bin' not in ansible_facts.packages"
 
     - name: create package yay if it hasn't been installed yet...
       become: true
