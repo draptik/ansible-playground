@@ -1,0 +1,40 @@
+---
+- name: Vault demo
+  hosts: localhost
+  gather_facts: false
+  vars:
+    foo: "bar"
+    critical_password: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        37653961356435346266303138366232303630373334346362383066663663613436366638616239
+        6234343534623338346562616135386237623763613737660a336664616136656637366364666339
+        66613235373662643538383463663863326331663461613862653262323164653466666530656435
+        3436646664343765610a646661666264323336343938386165323033383631333632656566323230
+        6533
+    demo1: "{{ demo_var_1 }}"
+    db_pw: "{{ db_password }}"
+  vars_files:
+    - ./group_vars/vars
+    - ./group_vars/vault
+    
+  tasks:
+
+    - name: Using a var
+      ansible.builtin.debug:
+        msg:
+          - "foo is: {{ foo }}"
+
+    - name: Using a var from an external file
+      ansible.builtin.debug:
+        msg:
+          - "foo is: {{ demo1 }}"
+
+    - name: Using a var from ansible vault file
+      ansible.builtin.debug:
+        msg:
+          - "foo is: {{ db_pw }}"
+
+    - name: Using a var from an inline ansible vault variable
+      ansible.builtin.debug:
+        msg:
+          - "Super critical password is: {{ critical_password }}"
