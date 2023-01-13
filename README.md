@@ -248,4 +248,7 @@ Example enable and start systemd service
     state: started
 ```
 
+## Ansible Vault
+
+See [vault-demo/README.md](./vault-demo/README.md).
 
