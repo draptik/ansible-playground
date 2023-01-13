@@ -6,7 +6,9 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     ansible_user: patrick
-
+    paperless_user: paperless_user
+    paperless_inbox_path: /home/patrick/paperless-inbox
+    
   tasks:
 
     - name: Create the `aur_builder` user
@@ -51,10 +53,115 @@
         chdir: ~/yay-bin
       when: "'yay-bin' not in ansible_facts.packages"
 
-    - name: Install packages using yay
+    - name: update arch system
+      aur:
+        use: yay
+        update_cache: true
+        upgrade: true
+      become: yes
+      become_user: aur_builder
+
+
+    - name: Install shell-related packages using yay
       aur:
         use: yay
         name:
-          - git
+          - tmux
+          - zsh
+          - bat
+          - htop
+          - starship
+          - tldr
+          - ranger
+          - ripgrep
+          - ripgrep-all
+          - fd
+          - ncdu
+          - jq
+          - neofetch
       become: yes
       become_user: aur_builder
+
+    # Paperless-ngx --------------------------------------------------------
+
+    - name: Create the `paperless` user
+      become: yes
+      user:
+        name: paperless_user
+        create_home: yes
+        group: wheel
+
+    - name: Allow the `paperless_user` user to do everything
+      become: yes
+      lineinfile:
+        path: /etc/sudoers.d/12-install-paperless_user
+        line: 'paperless_user ALL=(ALL) NOPASSWD: ALL'
+        create: yes
+        validate: 'visudo -cf %s'
+
+    - name: Install paperless-related packages using yay
+      aur:
+        use: yay
+        name:
+          - docker
+          - docker-compose
+      become: yes
+      become_user: aur_builder
+
+    - name: Ensure group "docker" exists
+      become: yes
+      become_user: patrick
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to group docker
+      become: yes
+      become_user: root
+      user:
+        name: paperless_user
+        groups: docker
+        append: yes
+
+    - name: Enable docker service
+      become: yes
+      become_user: root
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Create paperless directory
+      become: yes
+      become_user: paperless_user
+      file:
+        path: ~/paperless-ngx
+        state: directory
+        mode: '0755'
+
+    - name: Download paperless / docker-compose file
+      become: yes
+      become_user: paperless_user
+      get_url: 
+        url: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/main/docker/compose/docker-compose.postgres-tika.yml
+        dest: ~/paperless-ngx/docker-compose.postgres-tika.yml
+
+    - name: Modify paperless paths in docker-compose file
+      become: yes
+      become_user: paperless_user
+      lineinfile:
+        path: ~/paperless-ngx/docker-compose.postgres-tika.yml
+        regex: '^([ ]+\- )(\.\/consume):(.+)$'
+        line: \g<1>{{ paperless_inbox_path }}:\g<3>
+        backrefs: yes
+
+    ## Skip for now...
+    # - name: Download paperless / docker-env file
+    #   become: yes
+    #   become_user: paperless_user
+    #   get_url: 
+    #     url: https://raw.githubusercontent.com/paperless-ngx/paperless-ngx/main/docker/compose/docker-compose.env
+    #     dest: ~/paperless-ngx/docker-compose.env
+    
+
+      
